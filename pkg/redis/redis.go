@@ -5,7 +5,7 @@ import (
 )
 
 type Client struct {
-	conn *redis.Client
+	Conn *redis.Client
 }
 
 func New(addr string) Client {
@@ -14,10 +14,10 @@ func New(addr string) Client {
 	})
 
 	return Client{
-		conn: cl,
+		Conn: cl,
 	}
 }
 
 func (c *Client) Close() error {
-	return c.conn.Close()
+	return c.Conn.Close()
 }

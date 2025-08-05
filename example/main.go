@@ -8,6 +8,7 @@ import (
 	"github.com/charmingruby/drl/example/config"
 	"github.com/charmingruby/drl/example/http"
 	"github.com/charmingruby/drl/pkg/logger"
+	"github.com/charmingruby/drl/pkg/rate_limiter"
 	"github.com/charmingruby/drl/pkg/redis"
 	"github.com/joho/godotenv"
 )
@@ -31,15 +32,19 @@ func main() {
 
 	log.Info("connecting to Redis...")
 
-	redis.New(cfg.RedisURI)
+	redisCl := redis.New(cfg.RedisURI)
 
 	log.Info("connected to Redis")
+
+	rateLimiter := rate_limiter.New(&redisCl, 5, 60)
 
 	addr := fmt.Sprintf(":%s", cfg.ServerPort)
 
 	srv := http.NewServer(addr)
 
-	http.RegisterRoutes(srv.Router)
+	mw := http.NewMiddleware(&rateLimiter, log)
+
+	http.RegisterRoutes(srv.Router, mw)
 
 	log.Info("starting server...")
 
