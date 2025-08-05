@@ -3,7 +3,8 @@ package config
 import "github.com/caarlos0/env"
 
 type Config struct {
-	RedisURI string `env:"REDIS_URI,required"`
+	ServerPort string `env:"SERVER_PORT"`
+	RedisURI   string `env:"REDIS_URI,required"`
 }
 
 func New() (*Config, error) {

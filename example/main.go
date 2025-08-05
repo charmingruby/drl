@@ -1,7 +1,12 @@
 package main
 
 import (
+	"fmt"
+	"os"
+	"os/signal"
+
 	"github.com/charmingruby/drl/example/config"
+	"github.com/charmingruby/drl/example/http"
 	"github.com/charmingruby/drl/pkg/logger"
 	"github.com/charmingruby/drl/pkg/redis"
 	"github.com/joho/godotenv"
@@ -29,4 +34,31 @@ func main() {
 	redis.New(cfg.RedisURI)
 
 	log.Info("connected to Redis")
+
+	addr := fmt.Sprintf(":%s", cfg.ServerPort)
+
+	srv := http.NewServer(addr)
+
+	http.RegisterRoutes(srv.Router)
+
+	log.Info("starting server...")
+
+	go func() {
+		log.Info("server is running", "port", cfg.ServerPort)
+
+		if err := srv.Start(); err != nil {
+			log.Error("server error", "error", err.Error())
+			return
+		}
+	}()
+
+	exit := make(chan os.Signal, 1)
+
+	signal.Notify(exit, os.Interrupt)
+
+	signal := <-exit
+
+	log.Info("received signal", "signal", signal)
+
+	log.Info("application shutdown")
 }
