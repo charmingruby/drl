@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/charmingruby/drl/config"
+	"github.com/charmingruby/drl/example/config"
 	"github.com/charmingruby/drl/pkg/logger"
 	"github.com/charmingruby/drl/pkg/redis"
 	"github.com/joho/godotenv"

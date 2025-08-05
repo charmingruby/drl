@@ -1,7 +1,5 @@
-BIN := drl
-
 build:
-	go build -o ./bin/$(BIN) ./cmd/drl/main.go
+	go build -o ./bin/example ./example/main.go
 
 run: build
-	./bin/$(BIN)
+	./bin/example
